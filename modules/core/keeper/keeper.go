@@ -33,13 +33,17 @@ type Keeper struct {
 	ChannelKeeper    channelkeeper.Keeper
 	PortKeeper       portkeeper.Keeper
 	Router           *porttypes.Router
+
+	// the address capable of executing a MsgUpdateClientParams message. Typically, this
+	// should be the x/gov module account.
+	authority string
 }
 
 // NewKeeper creates a new ibc Keeper
 func NewKeeper(
 	cdc codec.BinaryCodec, key storetypes.StoreKey, paramSpace paramtypes.Subspace,
 	stakingKeeper clienttypes.StakingKeeper, upgradeKeeper clienttypes.UpgradeKeeper,
-	scopedKeeper capabilitykeeper.ScopedKeeper,
+	scopedKeeper capabilitykeeper.ScopedKeeper, authority string,
 ) *Keeper {
 	// register paramSpace at top level keeper
 	// set KeyTable if it has not already been set
@@ -72,6 +76,7 @@ func NewKeeper(
 		ConnectionKeeper: connectionKeeper,
 		ChannelKeeper:    channelKeeper,
 		PortKeeper:       portKeeper,
+		authority:        authority,
 	}
 }
 
@@ -106,4 +111,9 @@ func isEmpty(keeper interface{}) bool {
 		}
 	}
 	return false
+}
+
+// GetAuthority returns the connection module's authority.
+func (k Keeper) GetAuthority() string {
+	return k.authority
 }
