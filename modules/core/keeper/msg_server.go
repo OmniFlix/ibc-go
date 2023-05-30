@@ -414,9 +414,8 @@ func (k Keeper) RecvPacket(goCtx context.Context, msg *channeltypes.MsgRecvPacke
 		// write application state changes for asynchronous and successful acknowledgements
 		writeFn()
 
-	        // NOTE: The context returned by CacheContext() refers to a new EventManager, so it needs to explicitly set events to the original context.
-	        // Events from callback are emitted regardless of acknowledgement success
-	        ctx.EventManager().EmitEvents(cacheCtx.EventManager().Events())
+	    // NOTE: The context returned by CacheContext() refers to a new EventManager, so it needs to explicitly set events to the original context.
+	    ctx.EventManager().EmitEvents(cacheCtx.EventManager().Events())
 	}
 
 	// Set packet acknowledgement only if the acknowledgement is not nil.
